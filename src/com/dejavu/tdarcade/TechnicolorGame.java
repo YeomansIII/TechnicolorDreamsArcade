@@ -8,35 +8,24 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.state.StateBasedGame;
 
 import com.sun.istack.internal.logging.Logger;
 
-public class TechnicolorGame extends BasicGame {
-	
-	ScreenState curScreen;
+public class TechnicolorGame extends StateBasedGame {
 	
 	public TechnicolorGame(String title) {
 		super(title);
 	}
-
+	
 	@Override
-	public void init(GameContainer gc) throws SlickException {
+	public void initStatesList(GameContainer gc) throws SlickException {
 		// TODO Auto-generated method stub
-		curScreen = new GameScreen(gc);
+		addState(new Menu());
+		addState(new Level1());
 		gc.setTargetFrameRate(60);
 	}
 
-	@Override
-	public void update(GameContainer gc, int i) throws SlickException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void render(GameContainer gc, Graphics g) throws SlickException {
-		curScreen.render(gc, g);
-		g.drawString("Helo World!", 10, 40);
-	}
 	
 	public static void main(String...args) {
 		try {
@@ -49,4 +38,6 @@ public class TechnicolorGame extends BasicGame {
 			Logger.getLogger(TechnicolorGame.class.getName(), com.dejavu.tdarcade.TechnicolorGame.class).log(Level.SEVERE,null,ex);
 		}
 	}
+
+
 }
