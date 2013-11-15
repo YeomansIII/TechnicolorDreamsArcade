@@ -15,6 +15,7 @@ public class Player {
 	private Polygon playerPoly;
 	private Input input;
 	private Block entity;
+	private ViewPort viewport;
 
 	// SpriteSheets
 	private SpriteSheet walkingSheet, walkingLeftSheet, idleSheet;
@@ -32,11 +33,12 @@ public class Player {
 	private static final int JUMPING = 3;
 	private static final int FALLING = 4;
 
-	public Player(GameContainer gc) throws SlickException {
+	public Player(GameContainer gc, ViewPort view) throws SlickException {
 		facingRight = true;
-		curX = 70;
-		curY = 120;
+		curX = 100;
+		curY = 600;
 		input = gc.getInput();
+		viewport = view;
 		action = IDLE;
 		jumping = false;
 		g = 0.25f;
@@ -65,24 +67,20 @@ public class Player {
 	public void update(GameContainer gc, int i) throws SlickException {
 		if (jumping && jumpCount <= 30) {
 			moveY(-v);
-			playerPoly.setY(curY);
 			idleAnimation.update(i);
 			if (entityCollisionWith()) {
-				curY += v;
-				playerPoly.setY(curY);
-				v = 2;
+				moveY(v);
+				v = 3;
 				jumping = false;
 			}
 			jumpCount++;
 			v -= g;
 		} else {
 			jumping = false;
-			curY += v;
-			playerPoly.setY(curY);
+			moveY(v);
 			if (entityCollisionWith()) {
-				curY -= v;
-				playerPoly.setY(curY);
-				v = 2;
+				moveY(-v);
+				v = 3;
 			}
 			v += g;
 		}
@@ -93,69 +91,93 @@ public class Player {
 			v = 8;
 		} else if (input.isKeyDown(Input.KEY_D)) {
 			moveX(3);
-			playerPoly.setX(curX);
 			walkingAnimation.update(i);
 			action = WALKINGR;
 			if (entityCollisionWith()) {
 				moveX(-3);
-				playerPoly.setX(curX);
 			}
 		} else if (input.isKeyDown(Input.KEY_A)) {
 			moveX(-3);
-			playerPoly.setX(curX);
 			walkingLeftAnimation.update(i);
 			action = WALKINGL;
 			if (entityCollisionWith()) {
 				moveX(3);
-				playerPoly.setX(curX);
 			}
 
 		} else if (!jumping) {
 			idleAnimation.update(i);
-			action = IDLE;
+			action = IDLE; 
+		}
+
+		/*
+		 * if (curX - viewport.cordX() > 526) { viewport.setX(-3); } else if
+		 * (curX - viewport.cordX() < 524) { viewport.setX(3); }
+		 */
+		if (curX - viewport.cordX() > 520) {
+			viewport.setX(2);
+		} else if (curX - viewport.cordX() < 480) {
+			viewport.setX(-2);
 		}
 	}
 
 	public void moveX(float x) {
 		curX += x;
+		playerPoly.setX(curX);
 	}
 
 	public void moveY(float y) {
 		curY += y;
+		playerPoly.setY(curY);
 	}
 
 	public void render(GameContainer gc, Graphics g) throws SlickException {
-		System.out.println("Current Action: " + action);
+		// System.out.println("CurX-view: " + (curX - viewport.cordX())
+		// + "  CurY-view: " + (curY - viewport.cordY()));
+		 System.out.println("CurX: " + (curX) + "  CurY: " + (curY));
+		System.out.println("Viewport  X: "+viewport.getX()+"  Y: "+viewport.getY());
 		try {
 			switch (action) {
 			case IDLE:
-				idleAnimation.draw(curX, curY);
+				idleAnimation.draw(curX - viewport.cordX(),
+						curY - viewport.cordY());
 				break;
 			case JUMPING:
-				idleAnimation.draw(curX, curY);
+				idleAnimation.draw(curX - viewport.cordX(),
+						curY - viewport.cordY());
 				break;
 			case WALKINGR:
-				walkingAnimation.draw(curX, curY);
+				walkingAnimation.draw(curX - viewport.cordX(),
+						curY - viewport.cordY());
 				break;
 			case WALKINGL:
-				walkingLeftAnimation.draw(curX, curY);
+				walkingLeftAnimation.draw(curX - viewport.cordX(), curY
+						- viewport.cordY());
 				break;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		//g.draw(playerPoly);
+		 g.drawRect(playerPoly.getX() - viewport.cordX(), playerPoly.getY()
+		 - viewport.cordY(), 80, 150);
+		//g.drawRect(playerPoly.getX(), playerPoly.getY(), 80, 150);
+		;
 	}
 
 	public boolean entityCollisionWith() throws SlickException {
+		// float pX = playerPoly.getX(); float pY = playerPoly.getY();
 		for (int i = 0; i < BlockMap.entities.size(); i++) {
 			Block entity1 = (Block) BlockMap.entities.get(i);
 			entity = entity1;
+			// System.out.println("Entity X: " + entity.poly.getX() + "  Y: "
+			// + entity.poly.getY());
+			// playerPoly.setX(pX+viewport.cordX());
+			// playerPoly.setY(pY+viewport.cordY());
 			if (playerPoly.intersects(entity1.poly)) {
-				System.out.println("entity collide TRUE");
+				// playerPoly.setX(pX); playerPoly.setY(pY);
 				return true;
 			}
 		}
+		// playerPoly.setX(pX); playerPoly.setY(pY);
 		return false;
 	}
 }

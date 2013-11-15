@@ -18,8 +18,8 @@ public class Level1 extends BasicGameState{
 	public void init(GameContainer gc, StateBasedGame game) throws SlickException {
 		// TODO Auto-generated method stub
 		viewport = new ViewPort(0, 0);
-		map = new BlockMap("data/levels/test2.tmx");
-		player = new Player(gc);
+		map = new BlockMap("data/levels/tutorial.tmx");
+		player = new Player(gc,viewport);
 		input = new Input(0);
 	}
 
@@ -32,7 +32,7 @@ public class Level1 extends BasicGameState{
 
 	@Override
 	public void render(GameContainer gc, StateBasedGame game, Graphics g) throws SlickException {
-		BlockMap.tmap.render(-1*(viewport.getX()*15),-1*(viewport.getY()*15));
+		BlockMap.tmap.render(-1*(viewport.getX()),-1*(viewport.getY()));
 		player.render(gc, g);
 	}
 

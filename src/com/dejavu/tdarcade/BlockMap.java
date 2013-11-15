@@ -23,10 +23,15 @@ public class BlockMap implements TileBasedMap {
 		mapSize = mapWidth * mapHeight;
 
 		for (int x = 0; x < tmap.getWidth(); x++) {
+			System.out.println("");
 			for (int y = 0; y < tmap.getHeight(); y++) {
 				int tileID = tmap.getTileId(x, y, 0);
 				if (tileID == 1) {
+					//System.out.print("("+(x*15)+","+);
 					entities.add(new Block(x * 15, y * 15, square, "sqaure"));
+				}
+				else {
+					System.out.print("0");
 				}
 			}
 		}

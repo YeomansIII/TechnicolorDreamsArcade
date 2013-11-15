@@ -17,6 +17,14 @@ public class ViewPort {
 		return locY;
 	}
 	
+	public int cordX() {
+		return locX;
+	}
+	
+	public int cordY() {
+		return locY;
+	}
+	
 	public void setX(int x) {
 		locX+=x;
 	}
